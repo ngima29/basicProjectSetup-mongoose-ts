@@ -1,6 +1,7 @@
 import cors, { CorsOptions } from "cors";
 import express, { Express } from "express";
-import errorHandle from './middlewares/errorHandler';
+import * as errorHandler from './middlewares/errorHandler';
+import globalError from "./middlewares/globalErrorHandler";
 import { Database, port } from './config';
 import ArticleRoute from './routes/articleRoute'
 
@@ -18,10 +19,14 @@ class Server {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use('/images', express.static('public/images'))
 
-    //Api
+    //Api Routes
     this.app.use("/api/article", ArticleRoute);
+
     //Error Handler
-    this.app.use(errorHandle)
+    this.app.use(errorHandler.genericErrorHandler)
+    this.app.use(errorHandler.methodNotAllowed)
+    this.app.use(errorHandler.notFound)
+    this.app.use(globalError)
   }
 
   private async connectDB() {

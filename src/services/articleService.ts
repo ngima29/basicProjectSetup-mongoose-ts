@@ -1,7 +1,7 @@
 import slug from 'slug';
-import { InputeArticleInterface, ArticleInterface,ArgsArticleInterface } from '../interfaces';
+import { InputeArticleInterface, ArticleInterface, ArgsArticleInterface } from '../interfaces';
 import { ArticleModel } from '../models'
-import { MongooseQueryGenerator} from '../helpers'
+import { MongooseQueryGenerator } from '../helpers'
 
 export class ArticleService {
   async create(input: InputeArticleInterface): Promise<ArticleInterface> {
@@ -82,20 +82,19 @@ export class ArticleService {
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: order === 'desc' ? -1 : 1 });
-  
+
       return { count, rows: articles };
     } else {
-      // If no filters provided, return all articles
       const count = await ArticleModel.countDocuments({});
       const articles = await ArticleModel.find({})
         .skip(skip)
         .limit(limit)
         .sort({ [sort]: order === 'asc' ? -1 : 1 });
-  
+
       return { count, rows: articles };
     }
 
-  
+
   }
 
 }
