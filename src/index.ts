@@ -1,4 +1,4 @@
-import cors, { CorsOptions } from "cors";
+import cors from "cors";
 import express, { Express } from "express";
 import * as errorHandler from './middlewares/errorHandler';
 import globalError from "./middlewares/globalErrorHandler";

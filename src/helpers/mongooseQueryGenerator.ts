@@ -1,25 +1,23 @@
 class MongooseQueryGenerator {
-    private static instance: MongooseQueryGenerator;
-  
-    private constructor() {}
-  
-    public static get(): MongooseQueryGenerator {
-      if (!MongooseQueryGenerator.instance) {
-        MongooseQueryGenerator.instance = new MongooseQueryGenerator();
-      }
-      return MongooseQueryGenerator.instance;
+  private static instance: MongooseQueryGenerator;
+  private constructor() { }
+
+  public static get(): MongooseQueryGenerator {
+    if (!MongooseQueryGenerator.instance) {
+      MongooseQueryGenerator.instance = new MongooseQueryGenerator();
     }
-  
-    public searchRegex({ query, fields }: { query: string; fields: string[] }): any {
-      const filter = [];
-      for (const field of fields) {
-        filter.push({ [field]: { $regex: new RegExp(query, 'i') } });
-      }
-      return filter;
-    }
+    return MongooseQueryGenerator.instance;
   }
-  
-  const mongooseQueryGenerator = MongooseQueryGenerator.get();
-  
-  export { mongooseQueryGenerator as MongooseQueryGenerator };
-  
+
+  public searchRegex({ query, fields }: { query: string; fields: string[] }): any {
+    const filter = [];
+    for (const field of fields) {
+      filter.push({ [field]: { $regex: new RegExp(query, 'i') } });
+    }
+    return filter;
+  }
+}
+
+const mongooseQueryGenerator = MongooseQueryGenerator.get();
+
+export { mongooseQueryGenerator as MongooseQueryGenerator };

@@ -1,5 +1,5 @@
 import slug from 'slug';
-import { InputeArticleInterface, ArticleInterface, ArgsArticleInterface } from '../interfaces';
+import { InputeArticleInterface, ArticleInterface, ArgsArticleInterface, PaginationMetadata } from '../interfaces';
 import { ArticleModel } from '../models'
 import { MongooseQueryGenerator } from '../helpers'
 
@@ -31,10 +31,7 @@ export class ArticleService {
     return updatedData;
   }
   async getById(id: string): Promise<ArticleInterface | null> {
-    const dataExists = await ArticleModel.findOne({
-      _id: id,
-      deletedAt: null
-    }).select('-deletedAt');
+    const dataExists = await ArticleModel.findOne({ _id: id, deletedAt: null }).select('-deletedAt');
     if (!dataExists) throw new Error(`Given id : ${id} is not found`)
     return dataExists;
   }
@@ -55,46 +52,66 @@ export class ArticleService {
     if (!dataExists) throw new Error(`Data not found for the given query: ${JSON.stringify(query)}`)
     return dataExists;
   }
-  async findAndCountAll({ offset, limit, query, sort, order, tags, title, author }: ArgsArticleInterface): Promise<{ count: number; rows: ArticleInterface[] }> {
-    const skip = offset || 0;
 
-    const queryGenerator = MongooseQueryGenerator;
+  async findAndCountAll({
+    page,
+    limit,
+    query,
+    sort,
+    order,
+    tags,
+    title,
+    author,
+  }: ArgsArticleInterface): Promise<{ metadata: PaginationMetadata; data: { count: number; rows: ArticleInterface[] } }> {
+    try {
+      if (isNaN(page) || isNaN(limit)) {
+        throw new Error('Invalid page or limit');
+      }
+      const skip = Math.max((page - 1), 0) * limit;
+      const queryGenerator = MongooseQueryGenerator;
+      const filter = [];
 
-    const filter = [];
-    if (query) {
-      filter.push(...queryGenerator.searchRegex({ query, fields: ['title'] }));
+      if (query) {
+        filter.push(...queryGenerator.searchRegex({ query, fields: ['title'] }));
+      }
+
+      if (tags) {
+        filter.push({ tags });
+      }
+
+      if (title) {
+        filter.push(...queryGenerator.searchRegex({ query: title, fields: ['title'] }));
+      }
+
+      if (author) {
+        filter.push(...queryGenerator.searchRegex({ query: author, fields: ['author'] }));
+      }
+
+      const count = filter.length > 0
+        ? await ArticleModel.countDocuments({ $and: filter, deletedAt: null }).select('-deletedAt')
+        : await ArticleModel.countDocuments({ deletedAt: null }).select('-deletedAt');
+
+      const articles = filter.length > 0
+        ? await ArticleModel.find({ $and: filter, deletedAt: null }).select('-deletedAt')
+          .skip(skip)
+          .limit(limit)
+          .sort({ [sort]: order === 'desc' ? -1 : 1 })
+        : await ArticleModel.find({ deletedAt: null }).select('-deletedAt')
+          .skip(skip)
+          .limit(limit)
+          .sort({ [sort]: order === 'asc' ? -1 : 1 });
+
+      const metadata: PaginationMetadata = {
+        previousPage: page > 0 ? page - 1 : null,
+        currentPage: page,
+        nextPage: skip + articles.length < count ? page + 1 : null,
+        perPage: limit,
+      };
+
+      return { metadata, data: { count, rows: articles } };
+    } catch (error: any) {
+      throw error;
     }
-
-    if (tags) {
-      filter.push({ tags });
-    }
-
-    if (title) {
-      filter.push(...queryGenerator.searchRegex({ query: title, fields: ['title'] }));
-    }
-
-    if (author) {
-      filter.push(...queryGenerator.searchRegex({ query: author, fields: ['author'] }));
-    }
-    if (filter.length > 0) {
-      const count = await ArticleModel.countDocuments({ $and: filter });
-      const articles = await ArticleModel.find({ $and: filter })
-        .skip(skip)
-        .limit(limit)
-        .sort({ createdAt: order === 'desc' ? -1 : 1 });
-
-      return { count, rows: articles };
-    } else {
-      const count = await ArticleModel.countDocuments({});
-      const articles = await ArticleModel.find({})
-        .skip(skip)
-        .limit(limit)
-        .sort({ [sort]: order === 'asc' ? -1 : 1 });
-
-      return { count, rows: articles };
-    }
-
-
   }
 
 }

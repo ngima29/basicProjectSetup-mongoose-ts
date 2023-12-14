@@ -1,8 +1,9 @@
 import { SortEnum } from '../enums';
 
 export interface PaginationExtend {
-  offset: number;
+  offset?: number;
   limit: number;
+  page: number;
 }
 
 export interface OrderExtend {
@@ -15,3 +16,10 @@ export interface SearchExtend {
 }
 
 export interface PaginationOrderSearchExtend extends PaginationExtend, OrderExtend, SearchExtend { }
+
+export interface PaginationMetadata {
+  previousPage: number | any;
+  currentPage: number | any;
+  nextPage: number | any;
+  perPage: number | any;
+}

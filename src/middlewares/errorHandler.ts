@@ -44,16 +44,6 @@ export function genericErrorHandler(
           param: err.path.join('.'),
         })),
       };
-    } else if (error.isBoom) {
-      return {
-        success: false,
-        code: error.output.statusCode,
-        message: error.output.payload.message || error.output.payload.error,
-        details: (error.data || []).map((err: any) => ({
-          message: err.message,
-          param: err.path.join('.'),
-        })),
-      };
     } else {
       return {
         success: false,

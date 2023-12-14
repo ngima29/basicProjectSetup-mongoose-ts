@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ArticleService } from "../services";
 import { successResponseData, errorResponse } from "../utils";
 import { SortEnum } from '../enums';
-import { defaultOrder, defaultSort, pgMinLimit } from '../config'
+import { defaultOrder, defaultSort, pgMinLimit, defaultPage } from '../config'
 export class ArticleController {
   constructor() { }
 
@@ -62,22 +62,21 @@ export class ArticleController {
   }
 
   static async findAll(req: Request, res: Response): Promise<void> {
-    let { offset, limit, sort, order, title, author, query, tags } = req.query;
-   
+    let { limit, sort, order, title, author, query, tags, page } = req.query;
     sort = sort || defaultSort;
     query = query ? query.toString() : undefined;
     order = order ? order.toString() : defaultOrder.toString();
     tags = tags ? tags.toString() : undefined;
     author = author ? author.toString() : undefined;
-    title = title ? title.toString() : undefined
+    title = title ? title.toString() : undefined;
     const validatedSort: SortEnum = sort as SortEnum;
-    const parsedOffset = offset ? parseInt(offset as string) : 0;
     const parsedLimit = limit ? parseInt(limit as string) : pgMinLimit;
+    const parsedPage = page ? parseInt(page as string) : defaultPage
 
     try {
       const result = await new ArticleService().findAndCountAll({
-        offset:parsedOffset,
-        limit:parsedLimit,
+        limit: parsedLimit,
+        page: parsedPage,
         sort: validatedSort,
         order,
         author,
@@ -86,10 +85,11 @@ export class ArticleController {
         tags,
       });
 
-      return successResponseData({ data: result, message: "All Articles retrieved.", res });
+      return successResponseData({ data: result.data, metadata: result.metadata, message: "All Articles retrieved.", res });
     } catch (error: any) {
       console.error("Error getting all Articles:", error.message);
       return errorResponse({ errorMessage: error, res, statusCode: 400 });
     }
   }
+
 }
