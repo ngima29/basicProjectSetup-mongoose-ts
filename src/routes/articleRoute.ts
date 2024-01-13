@@ -3,13 +3,13 @@ import { ArticleController } from '../controllers';
 import exceptionHandler from '../middlewares/exceptionHandler';
 import { Validator } from '../middlewares';
 import { createArticle, updateArticle } from '../validators';
-import { upload } from '../utils';
+// import { upload } from '../utils';
 
 const router = express.Router();
 
 router.post(
   '/',
-  upload.single('image'),
+  //upload.single('image'),
   Validator.check(createArticle),
   exceptionHandler(async (req: Request, res: Response) => {
     await ArticleController.create(req, res, req.file?.path);

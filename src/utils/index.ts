@@ -1,3 +1,3 @@
 export * from './enumValidator';
 export * from './response';
-export * from './uploadFile';
+// export * from './uploadFile';
