@@ -1,0 +1,33 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReasonPhrasesEnum = exports.HttpStatusEnum = void 0;
+var HttpStatusEnum;
+(function (HttpStatusEnum) {
+    HttpStatusEnum[HttpStatusEnum["CONTINUE"] = 100] = "CONTINUE";
+    HttpStatusEnum[HttpStatusEnum["OK"] = 200] = "OK";
+    HttpStatusEnum[HttpStatusEnum["CREATED"] = 201] = "CREATED";
+    HttpStatusEnum[HttpStatusEnum["ACCEPTED"] = 202] = "ACCEPTED";
+    HttpStatusEnum[HttpStatusEnum["BAD_REQUEST"] = 400] = "BAD_REQUEST";
+    HttpStatusEnum[HttpStatusEnum["UNAUTHORIZED"] = 401] = "UNAUTHORIZED";
+    HttpStatusEnum[HttpStatusEnum["NOT_FOUND"] = 404] = "NOT_FOUND";
+    HttpStatusEnum[HttpStatusEnum["METHOD_NOT_ALLOWED"] = 405] = "METHOD_NOT_ALLOWED";
+    HttpStatusEnum[HttpStatusEnum["TOO_MANY_REQUESTS"] = 429] = "TOO_MANY_REQUESTS";
+    HttpStatusEnum[HttpStatusEnum["INTERNAL_SERVER_ERROR"] = 500] = "INTERNAL_SERVER_ERROR";
+    HttpStatusEnum[HttpStatusEnum["SERVICE_UNAVAILABLE"] = 503] = "SERVICE_UNAVAILABLE";
+    HttpStatusEnum[HttpStatusEnum["INSUFFICIENT_STORAGE"] = 507] = "INSUFFICIENT_STORAGE";
+})(HttpStatusEnum || (exports.HttpStatusEnum = HttpStatusEnum = {}));
+var ReasonPhrasesEnum;
+(function (ReasonPhrasesEnum) {
+    ReasonPhrasesEnum["ACCEPTED"] = "Accepted";
+    ReasonPhrasesEnum["BAD_REQUEST"] = "Bad Request";
+    ReasonPhrasesEnum["CONTINUE"] = "Continue";
+    ReasonPhrasesEnum["CREATED"] = "Created";
+    ReasonPhrasesEnum["METHOD_NOT_ALLOWED"] = "Method Not Allowed";
+    ReasonPhrasesEnum["INTERNAL_SERVER_ERROR"] = "Internal Server Error";
+    ReasonPhrasesEnum["INSUFFICIENT_STORAGE"] = "Insufficient Storage";
+    ReasonPhrasesEnum["NOT_FOUND"] = "Not Found";
+    ReasonPhrasesEnum["OK"] = "OK";
+    ReasonPhrasesEnum["SERVICE_UNAVAILABLE"] = "Service Unavailable";
+    ReasonPhrasesEnum["TOO_MANY_REQUESTS"] = "Too Many Requests";
+    ReasonPhrasesEnum["UNAUTHORIZED"] = "Unauthorized";
+})(ReasonPhrasesEnum || (exports.ReasonPhrasesEnum = ReasonPhrasesEnum = {}));
