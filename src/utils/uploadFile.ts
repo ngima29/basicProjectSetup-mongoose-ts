@@ -1,11 +1,13 @@
 import multer from 'multer';
 import * as path from 'path';
 import fs from 'fs';
+import {Request} from 'express'
+import { any } from 'joi';
 
 const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
+    destination: (req:Request, file:any, callback:any) => {
         const employeeImagesPath = path.resolve(__dirname, '../public/images');
-        fs.mkdir(employeeImagesPath, { recursive: true }, (err) => {
+        fs.mkdir(employeeImagesPath, { recursive: true }, (err:any) => {
             if (err) {
                 console.error('Error creating directory:', err);
                 callback(err, '');
