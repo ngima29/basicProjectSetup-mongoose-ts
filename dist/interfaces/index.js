@@ -17,3 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./articleInterface"), exports);
 __exportStar(require("./modelTimestampInterface"), exports);
 __exportStar(require("./paginationInterfac"), exports);
+__exportStar(require("./testInterface"), exports);

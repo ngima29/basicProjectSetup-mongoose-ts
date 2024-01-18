@@ -4,6 +4,7 @@ import * as errorHandler from './middlewares/errorHandler';
 import globalError from "./middlewares/globalErrorHandler";
 import { Database, port } from './config';
 import ArticleRoute from './routes/articleRoute'
+import TestRoute from './routes/testRoute'
 
 class Server {
   app: Express;
@@ -21,6 +22,7 @@ class Server {
 
     //Api Routes
     this.app.use("/api/article", ArticleRoute);
+    this.app.use("/api/test", TestRoute);
 
     //Error Handler
     this.app.use(errorHandler.genericErrorHandler)

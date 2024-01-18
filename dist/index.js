@@ -32,6 +32,7 @@ const errorHandler = __importStar(require("./middlewares/errorHandler"));
 const globalErrorHandler_1 = __importDefault(require("./middlewares/globalErrorHandler"));
 const config_1 = require("./config");
 const articleRoute_1 = __importDefault(require("./routes/articleRoute"));
+const testRoute_1 = __importDefault(require("./routes/testRoute"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -45,6 +46,7 @@ class Server {
         this.app.use('/images', express_1.default.static('public/images'));
         //Api Routes
         this.app.use("/api/article", articleRoute_1.default);
+        this.app.use("/api/test", testRoute_1.default);
         //Error Handler
         this.app.use(errorHandler.genericErrorHandler);
         this.app.use(errorHandler.methodNotAllowed);
