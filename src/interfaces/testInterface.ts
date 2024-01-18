@@ -11,4 +11,5 @@ export interface TestInterface extends Document, ModelTimestampExtend, InputeTes
   _id: Types.ObjectId;
   secret: string;
 }
-
+export interface ArgsTestInterface extends PaginationOrderSearchExtend {
+}

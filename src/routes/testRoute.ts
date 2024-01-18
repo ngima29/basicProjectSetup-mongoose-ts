@@ -16,9 +16,15 @@ router.post(
 );
 
 router.get(
-  '/',
+  '/qr',
   exceptionHandler(async (req: Request, res: Response) => {
     await TestController.getMyQR(req, res);
+  })
+);
+router.get(
+  '/',
+  exceptionHandler(async (req: Request, res: Response) => {
+    await TestController.findAll(req, res);
   })
 );
 

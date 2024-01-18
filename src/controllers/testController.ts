@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { TestService } from "../services";
 import { successResponseData, errorResponse } from "../utils";
+import { SortEnum } from '../enums';
+import { defaultOrder, defaultSort, pgMinLimit, defaultPage } from '../config'
 
 
 export class TestController {
@@ -29,4 +31,27 @@ export class TestController {
     }
   }
 
+  static async findAll(req: Request, res: Response): Promise<void> {
+    let { limit, sort, order, query,page } = req.query;
+    sort = sort || defaultSort;
+    query = query ? query.toString() : undefined;
+    order = order ? order.toString() : defaultOrder.toString();
+    const validatedSort: SortEnum = sort as SortEnum;
+    const parsedLimit = limit ? parseInt(limit as string) : pgMinLimit;
+    const parsedPage = page ? parseInt(page as string) : defaultPage
+
+    try {
+      const result = await new TestService().findAndCountAll({
+        limit: parsedLimit,
+        page: parsedPage,
+        sort: validatedSort,
+        order,
+      });
+
+      return successResponseData({ data: result.data, metadata: result.metadata, message: "All Articles retrieved.", res });
+    } catch (error: any) {
+      console.error("Error getting all Articles:", error.message);
+      return errorResponse({ errorMessage: error, res, statusCode: 400 });
+    }
+  }
 }

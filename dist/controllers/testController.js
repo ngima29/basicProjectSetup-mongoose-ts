@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestController = void 0;
 const services_1 = require("../services");
 const utils_1 = require("../utils");
+const config_1 = require("../config");
 class TestController {
     constructor() { }
     static async create(req, res) {
@@ -27,6 +28,28 @@ class TestController {
         catch (error) {
             console.error("Error getting test QR:", error.message);
             return (0, utils_1.errorResponse)({ errorMessage: error, res, statusCode: 404 });
+        }
+    }
+    static async findAll(req, res) {
+        let { limit, sort, order, query, page } = req.query;
+        sort = sort || config_1.defaultSort;
+        query = query ? query.toString() : undefined;
+        order = order ? order.toString() : config_1.defaultOrder.toString();
+        const validatedSort = sort;
+        const parsedLimit = limit ? parseInt(limit) : config_1.pgMinLimit;
+        const parsedPage = page ? parseInt(page) : config_1.defaultPage;
+        try {
+            const result = await new services_1.TestService().findAndCountAll({
+                limit: parsedLimit,
+                page: parsedPage,
+                sort: validatedSort,
+                order,
+            });
+            return (0, utils_1.successResponseData)({ data: result.data, metadata: result.metadata, message: "All Articles retrieved.", res });
+        }
+        catch (error) {
+            console.error("Error getting all Articles:", error.message);
+            return (0, utils_1.errorResponse)({ errorMessage: error, res, statusCode: 400 });
         }
     }
 }
