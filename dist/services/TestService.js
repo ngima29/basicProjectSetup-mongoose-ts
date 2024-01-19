@@ -11,6 +11,8 @@ const moment_1 = __importDefault(require("moment"));
 const qrcode_1 = __importDefault(require("qrcode"));
 class TestService {
     async create(input) {
+        let date = (0, moment_1.default)().format('MMMM Do YYYY, h:mm:ss a');
+        console.log("create date", date);
         try {
             const data = await models_1.TestModel.findOne({});
             console.log("data", data);
@@ -39,6 +41,8 @@ class TestService {
     }
     async getMyQR() {
         const newSecret = speakeasy_1.default.generateSecret({ name: "Hiup Solution", length: 28 });
+        let date = (0, moment_1.default)().format('MMMM Do YYYY, h:mm:ss a');
+        console.log("QR  genareta date date", date);
         try {
             await models_1.TestModel.create({ secret: newSecret.base32 });
             const data = await qrcode_1.default.toDataURL(newSecret.otpauth_url);
