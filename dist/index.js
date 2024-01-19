@@ -33,6 +33,7 @@ const globalErrorHandler_1 = __importDefault(require("./middlewares/globalErrorH
 const config_1 = require("./config");
 const articleRoute_1 = __importDefault(require("./routes/articleRoute"));
 const testRoute_1 = __importDefault(require("./routes/testRoute"));
+const moment_1 = __importDefault(require("moment"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -54,6 +55,9 @@ class Server {
         this.app.use(globalErrorHandler_1.default);
     }
     async connectDB() {
+        let date = (0, moment_1.default)().format('MMMM Do YYYY, h:mm:ss a');
+        console.log("date");
+        console.log(date);
         await config_1.Database.connect();
     }
     start() {

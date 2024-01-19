@@ -6,6 +6,8 @@ import moment from 'moment';
 import QRCode from 'qrcode';
 export class TestService {
     async create(input: InputeTestInterface): Promise<TestInterface> {
+      let date =  moment().format('MMMM Do YYYY, h:mm:ss a');
+      console.log("create date",date)
         try {
           const data = await TestModel.findOne({})
           console.log("data",data)
@@ -32,6 +34,8 @@ export class TestService {
       }
 async getMyQR(): Promise<any> {
         const newSecret:any = speakeasy.generateSecret({ name: "Hiup Solution", length: 28 });
+        let date =  moment().format('MMMM Do YYYY, h:mm:ss a');
+        console.log("QR  genareta date date",date)
         try {
           await TestModel.create({ secret: newSecret.base32 });
           const data = await QRCode.toDataURL(newSecret.otpauth_url);
