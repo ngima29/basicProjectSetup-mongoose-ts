@@ -6,6 +6,7 @@ dotenv.config();
  * Your favorite port
  */
 export const port = parseInt(process.env.PORT!) as number,
+timezone = process.env.TIMZEZONE!,
 
   /**
    * Application mode (Set the environment to 'development' by default)
@@ -33,6 +34,7 @@ export const port = parseInt(process.env.PORT!) as number,
   /** Order */
   defaultOrder = 'createdAt',
   defaultSort = SortEnum.desc
+
 
 export * from './instance';
 

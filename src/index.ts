@@ -2,10 +2,11 @@ import cors from "cors";
 import express, { Express } from "express";
 import * as errorHandler from './middlewares/errorHandler';
 import globalError from "./middlewares/globalErrorHandler";
-import { Database, port } from './config';
+import { Database, port,timezone } from './config';
 import ArticleRoute from './routes/articleRoute';
 import TestRoute from './routes/testRoute';
 import moment from 'moment';
+import momenttz from 'moment-timezone';
 
 class Server {
   app: Express;

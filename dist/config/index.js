@@ -26,14 +26,14 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultSort = exports.defaultOrder = exports.defaultPage = exports.defaultLimit = exports.defaultOffset = exports.pgMaxLimit = exports.pgMinLimit = exports.url = exports.hostUrl = exports.environment = exports.port = void 0;
+exports.defaultSort = exports.defaultOrder = exports.defaultPage = exports.defaultLimit = exports.defaultOffset = exports.pgMaxLimit = exports.pgMinLimit = exports.url = exports.hostUrl = exports.environment = exports.timezone = exports.port = void 0;
 const dotenv = __importStar(require("dotenv"));
 const enums_1 = require("../enums");
 dotenv.config();
 /**
  * Your favorite port
  */
-exports.port = parseInt(process.env.PORT), 
+exports.port = parseInt(process.env.PORT), exports.timezone = process.env.TIMZEZONE, 
 /**
  * Application mode (Set the environment to 'development' by default)
  */

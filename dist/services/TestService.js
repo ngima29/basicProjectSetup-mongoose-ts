@@ -5,10 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestService = void 0;
 const helpers_1 = require("../helpers");
+const config_1 = require("../config");
 const models_1 = require("../models");
 const speakeasy_1 = __importDefault(require("speakeasy"));
 const moment_1 = __importDefault(require("moment"));
 const qrcode_1 = __importDefault(require("qrcode"));
+const moment_timezone_1 = __importDefault(require("moment-timezone"));
 class TestService {
     async create(input) {
         let date = (0, moment_1.default)().format('MMMM Do YYYY, h:mm:ss a');
@@ -29,7 +31,7 @@ class TestService {
                     throw new Error(`Invalid OTP for clock-in!!!`);
                 console.log("verified", verified);
             }
-            const inputDate = (0, moment_1.default)(input.dateTime, 'MMMM Do YYYY, h:mm:ss a');
+            let inputDate = (0, moment_timezone_1.default)().tz(config_1.timezone);
             input.time = inputDate.format('h:mm:ss a');
             input.date = inputDate.format('YYYY-MM-DD');
             const created = await models_1.TestModel.create(input);
@@ -39,10 +41,9 @@ class TestService {
             throw error;
         }
     }
-    async getMyQR(localTime) {
-        // const newSecret:any = speakeasy.generateSecret({ name: "Hiup Solution", length: 28 });
-        // let date =  moment().format('MMMM Do YYYY, h:mm:ss a');
-        // console.log("QR  genareta date date",date)
+    async getMyQR() {
+        let localTime = (0, moment_timezone_1.default)().tz(config_1.timezone).format('YYYY-MM-DDTH:mm:ha');
+        console.log("QR  genareta local date", localTime);
         const userData = {
             name: "Hiup Solution",
             length: 28,
