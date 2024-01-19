@@ -9,7 +9,13 @@ export class TestController {
   constructor() { }
 
   static async create(req: Request, res: Response): Promise<void> {
+    const timezoneOffset: string | string[] | undefined = req.headers['timezone-offset'];
+    const validOffset: string | number | any= timezoneOffset !== undefined ? timezoneOffset : 0;
+    const localTime = moment().utcOffset(validOffset).format('MMMM Do YYYY, h:mm:ss a');
+    console.log("create req time",localTime)
+
     const data = req.body;
+    data.dateTime = localTime
     try {
       const result = await new TestService().create(data);
       return successResponseData({ data: result, message: "Test data is created.", res });
@@ -24,7 +30,7 @@ export class TestController {
     const timezoneOffset: string | string[] | undefined = req.headers['timezone-offset'];
     const validOffset: string | number | any= timezoneOffset !== undefined ? timezoneOffset : 0;
     const localTime = moment().utcOffset(validOffset).format('MMMM Do YYYY, h:mm:ss a');
-    console.log("hahahahha",localTime)
+    console.log("qr reqquest time from clent",localTime)
 
     try {
       const data = await new TestService().getMyQR(localTime);

@@ -28,7 +28,8 @@ const mongoose_1 = __importStar(require("mongoose"));
 const testSchema = new mongoose_1.Schema({
     time: { type: String },
     date: { type: String },
-    secret: { type: String }
+    secret: { type: String },
+    uid: { type: String, default: "555" }
 }, {
     timestamps: true,
 });

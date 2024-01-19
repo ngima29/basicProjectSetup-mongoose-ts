@@ -11,7 +11,12 @@ const moment_1 = __importDefault(require("moment"));
 class TestController {
     constructor() { }
     static async create(req, res) {
+        const timezoneOffset = req.headers['timezone-offset'];
+        const validOffset = timezoneOffset !== undefined ? timezoneOffset : 0;
+        const localTime = (0, moment_1.default)().utcOffset(validOffset).format('MMMM Do YYYY, h:mm:ss a');
+        console.log("create req time", localTime);
         const data = req.body;
+        data.dateTime = localTime;
         try {
             const result = await new services_1.TestService().create(data);
             return (0, utils_1.successResponseData)({ data: result, message: "Test data is created.", res });
@@ -27,7 +32,7 @@ class TestController {
         const timezoneOffset = req.headers['timezone-offset'];
         const validOffset = timezoneOffset !== undefined ? timezoneOffset : 0;
         const localTime = (0, moment_1.default)().utcOffset(validOffset).format('MMMM Do YYYY, h:mm:ss a');
-        console.log("hahahahha", localTime);
+        console.log("qr reqquest time from clent", localTime);
         try {
             const data = await new services_1.TestService().getMyQR(localTime);
             if (data) {

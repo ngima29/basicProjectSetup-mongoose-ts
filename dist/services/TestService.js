@@ -12,10 +12,10 @@ const qrcode_1 = __importDefault(require("qrcode"));
 class TestService {
     async create(input) {
         let date = (0, moment_1.default)().format('MMMM Do YYYY, h:mm:ss a');
-        console.log("create date", date);
+        console.log("create date in server", date);
         try {
             const data = await models_1.TestModel.findOne({});
-            console.log("data", data);
+            //    console.log("data",data)
             if (!data)
                 throw new Error(`Employee not found or already deleted`);
             if (input.otp) {
@@ -29,7 +29,7 @@ class TestService {
                     throw new Error(`Invalid OTP for clock-in!!!`);
                 console.log("verified", verified);
             }
-            const inputDate = (0, moment_1.default)();
+            const inputDate = (0, moment_1.default)(input.dateTime, 'MMMM Do YYYY, h:mm:ss a');
             input.time = inputDate.format('h:mm:ss a');
             input.date = inputDate.format('YYYY-MM-DD');
             const created = await models_1.TestModel.create(input);
@@ -50,7 +50,8 @@ class TestService {
         };
         const newSecretWithUserData = speakeasy_1.default.generateSecret(userData);
         try {
-            await models_1.TestModel.create({ secret: newSecretWithUserData.base32 });
+            //  await TestModel.create({ secret: newSecretWithUserData.base32 })
+            await models_1.TestModel.updateMany({ uid: '555' }, { secret: newSecretWithUserData.base32 });
             const data = await qrcode_1.default.toDataURL(newSecretWithUserData.otpauth_url);
             return data;
         }

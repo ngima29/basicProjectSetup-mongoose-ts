@@ -7,10 +7,10 @@ import QRCode from 'qrcode';
 export class TestService {
     async create(input: InputeTestInterface): Promise<TestInterface> {
       let date =  moment().format('MMMM Do YYYY, h:mm:ss a');
-      console.log("create date",date)
+      console.log("create date in server",date)
         try {
           const data = await TestModel.findOne({})
-          console.log("data",data)
+      //    console.log("data",data)
           if (!data) throw new Error(`Employee not found or already deleted`);
           if (input.otp) {
             const verified = speakeasy.totp.verify({
@@ -22,10 +22,9 @@ export class TestService {
             if (!verified) throw new Error(`Invalid OTP for clock-in!!!`);
             console.log("verified",verified)
            }
-            const inputDate = moment();
+            const inputDate = moment(input.dateTime,'MMMM Do YYYY, h:mm:ss a');
             input.time = inputDate.format('h:mm:ss a');
             input.date = inputDate.format('YYYY-MM-DD');
-     
           const created = await TestModel.create(input);
           return created;
         } catch (error: any) {
@@ -44,7 +43,9 @@ async getMyQR(localTime:any): Promise<any> {
         const newSecretWithUserData: any = speakeasy.generateSecret(userData);
 
         try {
-          await TestModel.create({ secret: newSecretWithUserData.base32 });
+        //  await TestModel.create({ secret: newSecretWithUserData.base32 })
+          await TestModel.updateMany({uid:'555'},{ secret: newSecretWithUserData.base32 });
+         
           const data = await QRCode.toDataURL(newSecretWithUserData.otpauth_url);
           return data;
         } catch (error) {
