@@ -32,13 +32,20 @@ export class TestService {
           throw error;
         }
       }
-async getMyQR(): Promise<any> {
-        const newSecret:any = speakeasy.generateSecret({ name: "Hiup Solution", length: 28 });
-        let date =  moment().format('MMMM Do YYYY, h:mm:ss a');
-        console.log("QR  genareta date date",date)
+async getMyQR(localTime:any): Promise<any> {
+        // const newSecret:any = speakeasy.generateSecret({ name: "Hiup Solution", length: 28 });
+        // let date =  moment().format('MMMM Do YYYY, h:mm:ss a');
+        // console.log("QR  genareta date date",date)
+        const userData = {
+          name: "Hiup Solution",
+          length: 28,
+          localTime,
+        };
+        const newSecretWithUserData: any = speakeasy.generateSecret(userData);
+
         try {
-          await TestModel.create({ secret: newSecret.base32 });
-          const data = await QRCode.toDataURL(newSecret.otpauth_url);
+          await TestModel.create({ secret: newSecretWithUserData.base32 });
+          const data = await QRCode.toDataURL(newSecretWithUserData.otpauth_url);
           return data;
         } catch (error) {
           throw new Error('Error updating or creating document and generating QR code');

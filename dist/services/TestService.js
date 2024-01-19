@@ -39,13 +39,19 @@ class TestService {
             throw error;
         }
     }
-    async getMyQR() {
-        const newSecret = speakeasy_1.default.generateSecret({ name: "Hiup Solution", length: 28 });
-        let date = (0, moment_1.default)().format('MMMM Do YYYY, h:mm:ss a');
-        console.log("QR  genareta date date", date);
+    async getMyQR(localTime) {
+        // const newSecret:any = speakeasy.generateSecret({ name: "Hiup Solution", length: 28 });
+        // let date =  moment().format('MMMM Do YYYY, h:mm:ss a');
+        // console.log("QR  genareta date date",date)
+        const userData = {
+            name: "Hiup Solution",
+            length: 28,
+            localTime,
+        };
+        const newSecretWithUserData = speakeasy_1.default.generateSecret(userData);
         try {
-            await models_1.TestModel.create({ secret: newSecret.base32 });
-            const data = await qrcode_1.default.toDataURL(newSecret.otpauth_url);
+            await models_1.TestModel.create({ secret: newSecretWithUserData.base32 });
+            const data = await qrcode_1.default.toDataURL(newSecretWithUserData.otpauth_url);
             return data;
         }
         catch (error) {

@@ -3,7 +3,7 @@ import { TestService } from "../services";
 import { successResponseData, errorResponse } from "../utils";
 import { SortEnum } from '../enums';
 import { defaultOrder, defaultSort, pgMinLimit, defaultPage } from '../config'
-
+import moment from 'moment';
 
 export class TestController {
   constructor() { }
@@ -20,8 +20,14 @@ export class TestController {
   };
 
   static async getMyQR(req: Request, res: Response): Promise<void> {
+    //const timezoneOffset = req.headers['timezone-offset'];
+    const timezoneOffset: string | string[] | undefined = req.headers['timezone-offset'];
+    const validOffset: string | number | any= timezoneOffset !== undefined ? timezoneOffset : 0;
+    const localTime = moment().utcOffset(validOffset).format('MMMM Do YYYY, h:mm:ss a');
+    console.log("hahahahha",localTime)
+
     try {
-      const data = await new TestService().getMyQR();
+      const data = await new TestService().getMyQR(localTime);
       if (data) {
         return successResponseData({ data, message: "test data found.", res });
       }
