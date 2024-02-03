@@ -31,23 +31,44 @@ const express_1 = __importDefault(require("express"));
 const errorHandler = __importStar(require("./middlewares/errorHandler"));
 const globalErrorHandler_1 = __importDefault(require("./middlewares/globalErrorHandler"));
 const config_1 = require("./config");
-const articleRoute_1 = __importDefault(require("./routes/articleRoute"));
-const testRoute_1 = __importDefault(require("./routes/testRoute"));
+const routes_1 = require("./routes");
+const http_1 = require("http");
+const socket_io_1 = require("socket.io");
+const path_1 = __importDefault(require("path"));
+const utils_1 = require("./utils");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
-        this.configuration();
+        this.httpServer = (0, http_1.createServer)(this.app);
+        this.io = new socket_io_1.Server(this.httpServer);
+        this.configureServer();
+        utils_1.SocketManager.initialize(this.io);
     }
-    configuration() {
-        this.app.set("port", config_1.port);
+    configureServer() {
+        this.app.set('port', config_1.port);
         this.app.use((0, cors_1.default)());
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.urlencoded({ extended: true }));
         this.app.use('/images', express_1.default.static('public/images'));
-        //Api Routes
-        this.app.use("/api/article", articleRoute_1.default);
-        this.app.use("/api/test", testRoute_1.default);
-        //Error Handler
+        this.app.use('/api', routes_1.proxyRouter.map());
+        this.io.on('connection', (socket) => {
+            console.log('A user connected');
+            const welcomeMessage = `Welcome, user with ID ${socket.id}!`;
+            socket.emit('welcome-message', welcomeMessage);
+            // Log the welcome message on the server
+            console.log(welcomeMessage);
+            socket.on('disconnect', () => {
+                console.log('User disconnected');
+            });
+        });
+        const publicPath = path_1.default.resolve(__dirname, 'public');
+        console.log('Public Path:', publicPath);
+        this.app.use(express_1.default.static(publicPath));
+        this.app.get('/', (req, res) => {
+            const indexPath = path_1.default.resolve(publicPath, 'index.html');
+            console.log('Index Path:', indexPath);
+            return res.sendFile(indexPath);
+        });
         this.app.use(errorHandler.genericErrorHandler);
         this.app.use(errorHandler.methodNotAllowed);
         this.app.use(errorHandler.notFound);
@@ -58,7 +79,7 @@ class Server {
     }
     start() {
         this.connectDB();
-        this.app.listen(this.app.get("port"), () => console.log(`App running on PORT ${config_1.port}`));
+        this.httpServer.listen(this.app.get('port'), () => console.log(`App running on PORT ${config_1.port}`));
     }
 }
 const server = new Server();
