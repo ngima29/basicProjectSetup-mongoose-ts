@@ -13,6 +13,7 @@ class SocketManager {
         return SocketManager.instance;
     }
     configureSocket() {
+        console.log("socked called");
         this.io.on('connection', (socket) => {
             console.log('A user connected');
             const welcomeMessage = `Welcome, user with ID ${socket.id}!`;

@@ -17,7 +17,12 @@ class Server {
   constructor() {
     this.app = express();
     this.httpServer = createServer(this.app);
-    this.io = new SocketIOServer(this.httpServer);
+    this.io = new SocketIOServer(this.httpServer, {
+      cors: {
+        origin: true, 
+        methods: ["GET", "POST"]
+      }
+    });
 
     this.configureServer();
     SocketManager.initialize(this.io);
@@ -31,29 +36,29 @@ class Server {
     this.app.use('/images', express.static('public/images'));
     this.app.use('/api', proxyRouter.map());
 
-    this.io.on('connection', (socket: Socket) => {
-      console.log('A user connected');
+    // this.io.on('connection', (socket: Socket) => {
+    //   console.log('A user connected');
      
-      const welcomeMessage = `Welcome, user with ID ${socket.id}!`;
-      socket.emit('welcome-message', welcomeMessage);
+    //   const welcomeMessage = `Welcome, user with ID ${socket.id}!`;
+    //   socket.emit('welcome-message', welcomeMessage);
 
-      // Log the welcome message on the server
-      console.log(welcomeMessage);
+    //   // Log the welcome message on the server
+    //   console.log(welcomeMessage);
 
-      socket.on('disconnect', () => {
-        console.log('User disconnected');
-      });
-    });
+    //   socket.on('disconnect', () => {
+    //     console.log('User disconnected');
+    //   });
+    // });
 
-    const publicPath = path.resolve(__dirname, 'public');
-    console.log('Public Path:', publicPath);
+    // const publicPath = path.resolve(__dirname, 'public');
+    // console.log('Public Path:', publicPath);
 
-    this.app.use(express.static(publicPath));
-    this.app.get('/', (req, res) => {
-      const indexPath = path.resolve(publicPath, 'index.html');
-      console.log('Index Path:', indexPath);
-      return res.sendFile(indexPath);
-    });
+    // this.app.use(express.static(publicPath));
+    // this.app.get('/', (req, res) => {
+    //   const indexPath = path.resolve(publicPath, 'index.html');
+    //   console.log('Index Path:', indexPath);
+    //   return res.sendFile(indexPath);
+    // });
 
     this.app.use(errorHandler.genericErrorHandler);
     this.app.use(errorHandler.methodNotAllowed);

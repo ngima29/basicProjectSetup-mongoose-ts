@@ -34,13 +34,17 @@ const config_1 = require("./config");
 const routes_1 = require("./routes");
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
-const path_1 = __importDefault(require("path"));
 const utils_1 = require("./utils");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
         this.httpServer = (0, http_1.createServer)(this.app);
-        this.io = new socket_io_1.Server(this.httpServer);
+        this.io = new socket_io_1.Server(this.httpServer, {
+            cors: {
+                origin: true,
+                methods: ["GET", "POST"]
+            }
+        });
         this.configureServer();
         utils_1.SocketManager.initialize(this.io);
     }
@@ -51,24 +55,24 @@ class Server {
         this.app.use(express_1.default.urlencoded({ extended: true }));
         this.app.use('/images', express_1.default.static('public/images'));
         this.app.use('/api', routes_1.proxyRouter.map());
-        this.io.on('connection', (socket) => {
-            console.log('A user connected');
-            const welcomeMessage = `Welcome, user with ID ${socket.id}!`;
-            socket.emit('welcome-message', welcomeMessage);
-            // Log the welcome message on the server
-            console.log(welcomeMessage);
-            socket.on('disconnect', () => {
-                console.log('User disconnected');
-            });
-        });
-        const publicPath = path_1.default.resolve(__dirname, 'public');
-        console.log('Public Path:', publicPath);
-        this.app.use(express_1.default.static(publicPath));
-        this.app.get('/', (req, res) => {
-            const indexPath = path_1.default.resolve(publicPath, 'index.html');
-            console.log('Index Path:', indexPath);
-            return res.sendFile(indexPath);
-        });
+        // this.io.on('connection', (socket: Socket) => {
+        //   console.log('A user connected');
+        //   const welcomeMessage = `Welcome, user with ID ${socket.id}!`;
+        //   socket.emit('welcome-message', welcomeMessage);
+        //   // Log the welcome message on the server
+        //   console.log(welcomeMessage);
+        //   socket.on('disconnect', () => {
+        //     console.log('User disconnected');
+        //   });
+        // });
+        // const publicPath = path.resolve(__dirname, 'public');
+        // console.log('Public Path:', publicPath);
+        // this.app.use(express.static(publicPath));
+        // this.app.get('/', (req, res) => {
+        //   const indexPath = path.resolve(publicPath, 'index.html');
+        //   console.log('Index Path:', indexPath);
+        //   return res.sendFile(indexPath);
+        // });
         this.app.use(errorHandler.genericErrorHandler);
         this.app.use(errorHandler.methodNotAllowed);
         this.app.use(errorHandler.notFound);
